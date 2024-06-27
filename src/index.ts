@@ -1,5 +1,6 @@
 import express from "express";
 import "./db";
+import Note from "./models/notes";
 
 //create server
 const app = express();
@@ -12,8 +13,14 @@ app.post("/", (req, res) => {
   res.json({ message: "Ich listening" });
 });
 
-app.post("/create", (req, res) => {
-  console.log(req.body);
+app.post("/create", async (req, res) => {
+  const newNote = new Note({
+    title: req.body.title,
+    description: req.body.description,
+  });
+
+  await newNote.save();
+
   res.json({ message: "ready to create" });
 });
 
