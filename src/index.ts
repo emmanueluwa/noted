@@ -51,6 +51,20 @@ app.delete("/:noteId", async (req, res) => {
   res.json({ message: "Note removed successfully" });
 });
 
+app.get("/", async (req, res) => {
+  const notes = await Note.find();
+  res.json({ notes });
+});
+
+app.get("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  const note = await Note.findById(id);
+  if (!note) return res.json({ error: "Note not found!" });
+
+  res.json({ note });
+});
+
 app.listen(8000, () => {
   console.log("listening");
 });
