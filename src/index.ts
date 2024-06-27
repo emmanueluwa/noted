@@ -1,6 +1,6 @@
 import express from "express";
 import "./db";
-import Note from "./models/notes";
+import Note, { NoteDocument } from "./models/notes";
 
 //create server
 const app = express();
@@ -13,15 +13,35 @@ app.post("/", (req, res) => {
   res.json({ message: "Ich listening" });
 });
 
+interface IncomingBody {
+  title: string;
+  description?: string;
+}
+
 app.post("/create", async (req, res) => {
-  const newNote = new Note({
-    title: req.body.title,
-    description: req.body.description,
+  //create and save
+  await Note.create<NoteDocument>({
+    title: (req.body as IncomingBody).title,
+    description: (req.body as IncomingBody).description,
   });
 
-  await newNote.save();
-
   res.json({ message: "ready to create" });
+});
+
+app.patch("/:noteId", async (req, res) => {
+  const { noteId } = req.params;
+
+  const note = await Note.findById(noteId);
+  if (!note) return res.json({ error: "Note not found!" });
+
+  const { title, description } = req.body as IncomingBody;
+
+  if (title) note.title = title;
+  if (description) note.description = description;
+
+  await note.save();
+
+  res.json({ note });
 });
 
 app.listen(8000, () => {
