@@ -1,6 +1,6 @@
 # Productivity Note-Taking App Backend
 
-This is the backend server for a React Native productivity note-taking application. It provides API endpoints for managing tasks/notes and calculating daily completion scores.
+This is the backend server for a React productivity note-taking application. It provides API endpoints for managing tasks/notes and calculating daily completion scores.
 
 ## Tech Stack
 
