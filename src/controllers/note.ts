@@ -8,17 +8,31 @@ interface IncomingBody {
 
 export const create: RequestHandler = async (req, res) => {
   //create and save
-  await Note.create<NoteDocument>({
+  const newNote = await Note.create<NoteDocument>({
     title: (req.body as IncomingBody).title,
     description: (req.body as IncomingBody).description,
   });
 
-  res.json({ message: "ready to create" });
+  res.json({
+    note: {
+      id: newNote._id,
+      title: newNote.title,
+      description: newNote.description,
+    },
+  });
 };
 
 export const getNotes: RequestHandler = async (req, res) => {
   const notes = await Note.find();
-  res.json({ notes });
+  res.json({
+    notes: notes.map((note) => {
+      return {
+        id: note._id,
+        title: note.title,
+        description: note.description,
+      };
+    }),
+  });
 };
 
 export const getSingleNote: RequestHandler = async (req, res) => {
@@ -28,7 +42,7 @@ export const getSingleNote: RequestHandler = async (req, res) => {
   if (!note) return res.json({ error: "Note not found!" });
 
   res.json({ note });
-}
+};
 
 export const updateSingleNote: RequestHandler = async (req, res) => {
   const { noteId } = req.params;
@@ -43,8 +57,6 @@ export const updateSingleNote: RequestHandler = async (req, res) => {
 
   res.json({ note });
 };
-
-
 
 export const deleteNote: RequestHandler = async (req, res) => {
   const { noteId } = req.params;
