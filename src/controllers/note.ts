@@ -55,7 +55,13 @@ export const updateSingleNote: RequestHandler = async (req, res) => {
   );
   if (!note) return res.json({ error: "Note not found!" });
 
-  res.json({ note });
+  res.json({
+    note: {
+      id: note._id,
+      title: note.title,
+      description: note.description,
+    },
+  });
 };
 
 export const deleteNote: RequestHandler = async (req, res) => {
